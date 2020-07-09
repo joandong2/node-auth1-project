@@ -60,15 +60,47 @@ router.post("/api/login", async (req, res, next) => {
     }
 });
 
+router.get("/api/posts", async (req, res, next) => {
+    try {
+        res.json({
+            message: "Posts route not protected",
+        });
+    } catch (err) {
+        next(err);
+    }
+});
+
 router.get("/api/users", async (req, res, next) => {
     try {
-        if (!req.session || !req.session.user) {
-            return res
-                .status(401)
-                .json({ error: "No session available, Please login" });
-        }
+        // if (!req.session || !req.session.user) {
+        //     return res
+        //         .status(401)
+        //         .json({ error: "No session available, Please login" });
+        // }
 
         res.json(await Users.find());
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.get("/api/users/:id", async (req, res, next) => {
+    try {
+        // if (!req.session || !req.session.user) {
+        //     return res
+        //         .status(401)
+        //         .json({ error: "No session available, Please login" });
+        // }
+
+        const user = await Users.findById(req.params.id);
+
+        if (!user) {
+            return res.status(401).json({
+                message: "User not found",
+            });
+        }
+
+        res.json(user);
     } catch (err) {
         next(err);
     }

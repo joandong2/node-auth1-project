@@ -24,6 +24,17 @@ server.use(
     })
 );
 
+function sessionChecker(req, res, next) {
+    if (!req.session.user || !req.session) {
+        return res.status(401).json({
+            error: "Protected route",
+        });
+    } else {
+        next();
+    }
+}
+
+server.use("/api/users", sessionChecker);
 server.use(usersRouter);
 
 server.use((err, req, res, next) => {
